@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include "opcda.h"
 #include "SOCAdviseSink.h"
-
+#pragma warning(disable : 4996)
 extern UINT OPC_DATA_TIME; // Defined in "SimpleOPCClient.cpp"
 
 						   //////////////////////////////////////////////////////////////////////////////
