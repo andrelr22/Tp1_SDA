@@ -160,6 +160,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="opcda_i.c" />
     <ClCompile Include="sda_OPC.cpp" />
+    <ClCompile Include="sda_TCP.cpp" />
     <ClCompile Include="SOCAdviseSink.cpp" />
     <ClCompile Include="SOCDataCallback.cpp" />
     <ClCompile Include="SOCWrapperlFunctions.cpp" />
