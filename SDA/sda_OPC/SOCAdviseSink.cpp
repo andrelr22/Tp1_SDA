@@ -8,6 +8,7 @@
 //
 // Luiz T. S. Mendes - DELT/UFMG - 06 Sept 2011
 //
+#include "stdafx.h"
 
 #include <stdio.h>
 #include <assert.h>

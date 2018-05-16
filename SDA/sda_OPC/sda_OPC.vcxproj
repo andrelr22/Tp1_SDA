@@ -23,7 +23,7 @@
     <ProjectGuid>{FC2CC8F8-8D5D-4F00-A024-5EE8AFBD14CA}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>sdaOPC</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
     <ProjectName>sda</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
