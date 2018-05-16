@@ -157,6 +157,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="opcda_i.c" />
     <ClCompile Include="sda_OPC.cpp" />
     <ClCompile Include="SOCAdviseSink.cpp" />
