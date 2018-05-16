@@ -6,6 +6,7 @@
 //
 // Luiz T. S. Mendes - DELT/UFMG - 13 Sept 2011
 //
+#include "stdafx.h"
 
 #include <stdio.h>
 #include "SOCDataCallback.h"
