@@ -22,6 +22,9 @@
 #define DEFAULT_BUFLEN 512
 #define DEFAULT_PORT "7420"
 
+extern char TCPparaOPC[30];
+extern char TCPparaOPC[30];
+
 int enviaACK(SOCKET ClientSocket, int IdMsg) {
 	char sendbuf[10], Idstring[10];
 	printf("1");
@@ -108,6 +111,7 @@ const char* solicitaDados(char *Buffer, int size) {
 
 int servidor_TCP(void)
 {
+	printf("\n\n%sFDP DO CARALHO", TCPparaOPC);
 	WSADATA wsaData;
 	int iResult;
 
