@@ -22,8 +22,34 @@
 #define DEFAULT_BUFLEN 50
 #define DEFAULT_PORT "7420"
 
+extern char TCPparaOPCV[5][30];
+extern char OPCparaTCPV[5][32];
+
 extern char TCPparaOPC[30];
 extern char OPCparaTCP[32];
+
+int ApontadorPosicao = 0;
+
+void leBuffer(int id, char *idstring, char  *Buffer) {
+	int flag = 0, inter = 0, posicao = id % 5;
+	while (flag == 0) {
+		if ((strncmp((OPCparaTCPV[posicao] + 2), idstring, 3) == 0)) {
+				strcpy_s(Buffer, sizeof(Buffer), OPCparaTCPV[posicao]);
+				flag = 1;
+			}
+		inter = inter + 1;
+		if (inter > 1000) {
+			printf("SERVIDOR TCP : ERRO INTERNO");
+			exit(1);
+		}
+	}
+}
+
+void adicionaAoBuffer(int id,char  *Buffer) {
+	int posicao =(id-1) % 5;
+	strcpy_s(TCPparaOPCV[posicao], sizeof(TCPparaOPCV[posicao]), Buffer);
+
+}
 
 int enviaACK(SOCKET ClientSocket, int IdMsg) {
 	char sendbuf[10], Idstring[10];
@@ -92,13 +118,7 @@ int enviaDados(SOCKET ClientSocket, const char *Buffer, int IdMensagem) {
 
 }
 
-const char* solicitaDados(char *Buffer, int size) {
-	
-	char BufferRecebido[50];
-	strcpy_s(BufferRecebido, sizeof(BufferRecebido), OPCparaTCP);
-	//enviaOPC(Buffer,BufferRecebido)
-	return "023;00045;False;038;0000543.28";
-}
+
 
 
 int servidor_TCP(void)
@@ -178,8 +198,9 @@ int servidor_TCP(void)
 	printf("SERVIDOR TCP: Conexão Estabelecida\n");
 	// No longer need server socket
 	closesocket(ListenSocket);
-	int  IdMensagem;
+	int  IdMensagem, IdLeitura = 0, IdEscrita = 0;
 	// Receive until the peer shuts down the connection
+	char sendbuf[50], IdstringTrocaDados[4];
 	while (1 == 1) {
 
 		iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
@@ -196,17 +217,36 @@ int servidor_TCP(void)
 				IdMensagem = IdMensagem + 1;
 				enviaACK(ClientSocket, IdMensagem);
 				printf("recvbuf eh %s\n, strlen de rcvbuf +10 eh %d\n", (recvbuf + 10),strlen(recvbuf + 10));
-				memcpy(TCPparaOPC, (recvbuf + 10), 22 * sizeof(char));
+				
+				
+				sprintf_s(IdstringTrocaDados, "%03d", IdEscrita);
+				strcpy_s(sendbuf, sizeof(sendbuf), "0;");
+				strcpy_s(sendbuf, sizeof(sendbuf), IdstringTrocaDados);
+				strcat_s(sendbuf, sizeof(sendbuf), ";");
+				strcat_s(sendbuf, sizeof(sendbuf), (recvbuf + 10));
+				adicionaAoBuffer(IdEscrita, sendbuf);
+				IdEscrita = IdEscrita + 1;
+				//memcpy(TCPparaOPC, (recvbuf + 10), 22 * sizeof(char));
 				printf("TCPparaOPC recebeu dados, dados recebidos = %s\n\n", TCPparaOPC);
 
 			}
 			else if (strncmp(&recvbuf[0], "01", 2) == 0) {
 				IdMensagem = IdMensagem + 1;
 				enviaACK(ClientSocket, IdMensagem);
-				const char *sendbuf;
-				sendbuf = solicitaDados(recvbuf + 3, iResult - 3);
+				
+
+				strcpy_s(sendbuf, sizeof(sendbuf), "1;");
+				sprintf_s(IdstringTrocaDados, "%03d", IdEscrita);
+				strcat_s(sendbuf, sizeof(sendbuf), IdstringTrocaDados);
+				strcat_s(sendbuf, sizeof(sendbuf), ";");
+				adicionaAoBuffer(IdEscrita, sendbuf);
+				IdEscrita = IdEscrita + 1;
+
+				sprintf_s(IdstringTrocaDados, "%03d", IdLeitura);
+				leBuffer(IdLeitura, IdstringTrocaDados, sendbuf);
+
 				IdMensagem = IdMensagem + 1;
-				enviaDados(ClientSocket, OPCparaTCP, IdMensagem);
+				enviaDados(ClientSocket, sendbuf+4, IdMensagem);
 				IdMensagem = IdMensagem + 1; //referente ao ACK que será enviado pelo cliente
 
 			}
