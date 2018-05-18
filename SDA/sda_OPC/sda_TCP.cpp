@@ -19,30 +19,25 @@
 #pragma comment (lib, "Ws2_32.lib")
 // #pragma comment (lib, "Mswsock.lib")
 
-#define DEFAULT_BUFLEN 512
+#define DEFAULT_BUFLEN 50
 #define DEFAULT_PORT "7420"
 
 extern char TCPparaOPC[30];
-extern char TCPparaOPC[30];
+extern char OPCparaTCP[32];
 
 int enviaACK(SOCKET ClientSocket, int IdMsg) {
 	char sendbuf[10], Idstring[10];
-	printf("1");
 	strcpy_s(sendbuf, sizeof(sendbuf), "11;");
-	printf("1");
 	sprintf_s(Idstring, "%06d", IdMsg);
-	printf("size of idstring %d\n strlen eh %d\n", sizeof(Idstring), strlen(Idstring));
-	printf("1");
 	strcat_s(sendbuf, sizeof(sendbuf), Idstring);
-	printf("1");
 	int iSendResult = send(ClientSocket, sendbuf, strlen(sendbuf), 0);
-	printf("%d", iSendResult);
 	if (iSendResult == SOCKET_ERROR) {
 		printf("send failed with error: %d\n", WSAGetLastError());
 		closesocket(ClientSocket);
 		WSACleanup();
 		return 1;
 	}
+	printf("SERVIDOR TCP: ACK enviado\n");
 	return 0;
 }
 
@@ -51,7 +46,6 @@ char* separaString(char *String, int tamanho) {
 	for (int i = 0; i <(tamanho + 1); i++) {
 		StringRetorno[i] = String[i];
 	}
-	printf("a string de retorno eh %s", StringRetorno);
 	return StringRetorno;
 }
 
@@ -61,9 +55,10 @@ char* separaString(char *String, int tamanho) {
 
 //}
 
+
+
 int enviaDados(SOCKET ClientSocket, const char *Buffer, int IdMensagem) {
-	printf("ENTROU ENVIA DADOS\n");
-	printf("o conteudo em buffer eh %s\n", Buffer);
+
 	char BufferEnvio[50], Idstring[8];
 
 	strcpy_s(BufferEnvio, sizeof(BufferEnvio), "10;");
@@ -72,9 +67,8 @@ int enviaDados(SOCKET ClientSocket, const char *Buffer, int IdMensagem) {
 	strcat_s(BufferEnvio, sizeof(BufferEnvio), ";");
 	strcat_s(BufferEnvio, sizeof(BufferEnvio), Buffer);
 
-	printf("size of buffer %d\n e stlen %d\n", sizeof(BufferEnvio), strlen(BufferEnvio));
 	int iSendResult = send(ClientSocket, BufferEnvio, strlen(BufferEnvio), 0);
-	printf("o buffer enviado foi %s\n", BufferEnvio);
+	printf("SERVIDOR TCP: o buffer enviado para o MES foi %s\n", BufferEnvio);
 
 	if (iSendResult == SOCKET_ERROR) {
 		printf("send failed with error: %d\n", WSAGetLastError());
@@ -99,19 +93,17 @@ int enviaDados(SOCKET ClientSocket, const char *Buffer, int IdMensagem) {
 }
 
 const char* solicitaDados(char *Buffer, int size) {
-	printf("FUNCAO SOLICITA DADOS\n");
-	printf("%s\n", Buffer);
-	char BufferRecebido[50] = "023;00045;False;038;0000543.28", BufferRetorno[50];
+	
+	char BufferRecebido[50];
+	strcpy_s(BufferRecebido, sizeof(BufferRecebido), OPCparaTCP);
 	//enviaOPC(Buffer,BufferRecebido)
-	strcpy_s(BufferRetorno, sizeof(BufferRetorno), BufferRecebido);
-	printf("%s\n", BufferRetorno);
 	return "023;00045;False;038;0000543.28";
 }
 
 
 int servidor_TCP(void)
 {
-	printf("\n\n%sFDP DO CARALHO", TCPparaOPC);
+
 	WSADATA wsaData;
 	int iResult;
 
@@ -183,7 +175,7 @@ int servidor_TCP(void)
 		WSACleanup();
 		return 1;
 	}
-	printf("Conexão Estabelecida");
+	printf("SERVIDOR TCP: Conexão Estabelecida\n");
 	// No longer need server socket
 	closesocket(ListenSocket);
 	int  IdMensagem;
@@ -196,25 +188,25 @@ int servidor_TCP(void)
 		IdMensagem = atoi(strId);
 
 
-		printf("mensagem recebida: %s \n", recvbuf);
+		printf("SERVIDOR TCP:mensagem recebida: %s \n", recvbuf);
 		if (iResult > 0) {
 			printf("Bytes received: %d\n", iResult);
 
 			if (strncmp(&recvbuf[0], "00", 2) == 0) {
-				printf("o id da mensagem eh %d", IdMensagem);
 				IdMensagem = IdMensagem + 1;
 				enviaACK(ClientSocket, IdMensagem);
-				//			envioParametros(recvbuf + 3,iResult-3);
+				printf("recvbuf eh %s\n, strlen de rcvbuf +10 eh %d\n", (recvbuf + 10),strlen(recvbuf + 10));
+				memcpy(TCPparaOPC, (recvbuf + 10), 22 * sizeof(char));
+				printf("TCPparaOPC recebeu dados, dados recebidos = %s\n\n", TCPparaOPC);
+
 			}
 			else if (strncmp(&recvbuf[0], "01", 2) == 0) {
-				printf("o id da mensagem eh %d", IdMensagem);
 				IdMensagem = IdMensagem + 1;
 				enviaACK(ClientSocket, IdMensagem);
 				const char *sendbuf;
 				sendbuf = solicitaDados(recvbuf + 3, iResult - 3);
-				printf("o conteudo se sendbuf eh %s\n", sendbuf);
 				IdMensagem = IdMensagem + 1;
-				enviaDados(ClientSocket, sendbuf, IdMensagem);
+				enviaDados(ClientSocket, OPCparaTCP, IdMensagem);
 				IdMensagem = IdMensagem + 1; //referente ao ACK que será enviado pelo cliente
 
 			}
@@ -222,7 +214,7 @@ int servidor_TCP(void)
 				//ack(recvbuf + 2, iResult);
 			}
 			else {
-				printf("Comando Passado pelo cliente é inválido\n");
+				printf("SERVIDOR TCP:Comando Passado pelo cliente é inválido\n");
 			}
 			//system("PAUSE");
 
