@@ -23,7 +23,7 @@
 #define DEFAULT_PORT "7420"
 
 extern char TCPparaOPC[30];
-extern char TCPparaOPC[30];
+extern char OPCparaTCP[30];
 
 int enviaACK(SOCKET ClientSocket, int IdMsg) {
 	char sendbuf[10], Idstring[10];
