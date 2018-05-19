@@ -12,6 +12,13 @@
 #include <stdio.h>
 #include "opcda.h"
 #include "SOCAdviseSink.h"
+
+extern char itemINT1[30];
+extern char itemINT2[30];
+extern char itemBOOL[30];
+extern char itemUINT1[30];
+extern char itemREAL4[30];
+
 #pragma warning(disable : 4996)
 extern UINT OPC_DATA_TIME; // Defined in "SimpleOPCClient.cpp"
 
@@ -120,39 +127,44 @@ void CancelAdviseSink(IDataObject *pIDataObject, DWORD tkAsyncConnection)
 //
 bool VarToStr(VARIANT pvar, char *buffer)
 {
+	
+
 	bool vReturn = true;
 	switch (pvar.vt & ~VT_ARRAY)
 	{
 	case VT_I1:
-		sprintf(buffer, "%d", pvar.iVal);	break;
-		// RAFAEL sprintf(buffer, "%06d",    pvar.iVal);	break;
+		sprintf(buffer, "%d", pvar.iVal);
+		strcpy_s(itemINT1, sizeof(itemINT1), buffer);
+		break;
 	case VT_I2:
-		sprintf(buffer, "%d", pvar.intVal);	break;
-		// RAFAEL sprintf(buffer, "%06d",    pvar.intVal);	break;
+		sprintf(buffer, "%d", pvar.intVal);
+		strcpy_s(itemINT2, sizeof(itemINT2),buffer);
+		break;
 	case VT_I4:
-		sprintf(buffer, "%ld", pvar.intVal);	break;
-		//RAFAEL sprintf(buffer, "%06d",   pvar.intVal);	break;
+		sprintf(buffer, "%03u", pvar.uiVal);
+		strcpy_s(itemUINT1, sizeof(itemUINT1), buffer);
+		break;
 	case VT_UI1:
-		//sprintf(buffer, "%u",    pvar.uiVal);	break;
-		sprintf(buffer, "%06u", pvar.uiVal);	break;
+		printf("\n\n\nPQ NÃO ENTRA AQUIIII??\n\n\n");
+		sprintf(buffer, "%06u", pvar.uiVal);
+		strcpy_s(itemUINT1, sizeof(itemUINT1),buffer);
+		break;
 	case VT_UI2:
-		sprintf(buffer, "%u", pvar.ulVal);	break;
-		//RAFAEL sprintf(buffer, "%06u",    pvar.ulVal);	break;
+		break;
 	case VT_UI4:
-		sprintf(buffer, "%lu", pvar.ulVal);	break;
-		//RAFAEL sprintf(buffer, "%06u",   pvar.ulVal);	break;
+		break;
 	case VT_R4:
-		sprintf(buffer, "%6.2f", pvar.fltVal);	break;
-		//RAFAEL sprintf(buffer, "%06.1f", pvar.fltVal);	break;
+		sprintf(buffer, "%6.2f", pvar.fltVal);
+		strcpy_s(itemREAL4, sizeof(itemREAL4), buffer);
+		break;
 	case VT_R8:
-		//LUIZ sprintf(buffer, "%lu",   pvar.dblVal);	break;
-		sprintf(buffer, "%lf", pvar.dblVal);	break;
-		//RAFAEL sprintf(buffer, "%06.1Lf",   pvar.dblVal);	break;
+		break;
 	case VT_BSTR:
-		sprintf(buffer, "%s", pvar.bstrVal);	break;
-		//RAFAEL sprintf(buffer, "%6.6s",    pvar.bstrVal);	break;
+		break;
 	case VT_BOOL:
-		sprintf(buffer, pvar.boolVal ? "true" : "false" , pvar.boolVal);	break;
+		sprintf(buffer, pvar.boolVal ? "true" : "false" , pvar.boolVal);
+		strcpy_s(itemBOOL, sizeof(itemBOOL), buffer);
+		break;
 	default:
 		sprintf(buffer, "%s", NULL);
 		vReturn = false;

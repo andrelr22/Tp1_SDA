@@ -11,7 +11,12 @@ char OPCparaTCPV[5][35];
 char TCPparaOPC[30];
 char OPCparaTCP[32];
 
-char DadosRecebidos[30];
+char itemINT1[30];
+char itemINT2[30];
+char itemBOOL[30];
+char itemUINT1[30];
+char itemREAL4[30];
+
 
 int main()
 {
@@ -25,5 +30,5 @@ int main()
 
 	TCP_SERVER.join();
 	*/
-	connect_OPC(1);
+	connect_OPC(0);
 }

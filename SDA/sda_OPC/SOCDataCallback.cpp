@@ -13,7 +13,11 @@
 #include "SOCDataCallback.h"
 #include "SOCWrapperFunctions.h"
 
-extern char DadosRecebidos[30];
+extern char itemINT1[30];
+extern char itemINT2[30];
+extern char itemBOOL[30];
+extern char itemUINT1[30];
+extern char itemREAL4[30];
 
 extern UINT OPC_DATA_TIME;
 
@@ -132,8 +136,10 @@ HRESULT STDMETHODCALLTYPE SOCDataCallback::OnDataChange(
 		status = VarToStr(pvValues[dwItem], buffer);
 		if (status) {
 			//printf("Data callback: Value = %s", buffer);
+
+			//strcpy_s(DadosRecebidos, sizeof(DadosRecebidos), buffer);
+
 			//printf("%s\n", DadosRecebidos);///////////////////
-			strcpy_s(DadosRecebidos, sizeof(DadosRecebidos), buffer);
 
 			quality = pwQualities[dwItem] & OPC_QUALITY_MASK;
 			/*if (quality == OPC_QUALITY_GOOD)
