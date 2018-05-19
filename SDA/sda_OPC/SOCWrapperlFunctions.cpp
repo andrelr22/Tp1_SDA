@@ -133,20 +133,21 @@ bool VarToStr(VARIANT pvar, char *buffer)
 	switch (pvar.vt & ~VT_ARRAY)
 	{
 	case VT_I1:
-		sprintf(buffer, "%d", pvar.iVal);
+		sprintf(buffer, "%03d", pvar.iVal);
 		strcpy_s(itemINT1, sizeof(itemINT1), buffer);
 		break;
 	case VT_I2:
-		sprintf(buffer, "%d", pvar.intVal);
+		sprintf(buffer, "%05d", pvar.intVal);
 		strcpy_s(itemINT2, sizeof(itemINT2),buffer);
 		break;
 	case VT_I4:
 		sprintf(buffer, "%03u", pvar.uiVal);
-		strcpy_s(itemUINT1, sizeof(itemUINT1), buffer);
+		strncpy(itemUINT1, buffer,3);
+		//strcpy_s(itemUINT1, sizeof(itemUINT1), buffer);
 		break;
 	case VT_UI1:
 		printf("\n\n\nPQ NÃO ENTRA AQUIIII??\n\n\n");
-		sprintf(buffer, "%06u", pvar.uiVal);
+		sprintf(buffer, "%3u", pvar.uiVal);
 		strcpy_s(itemUINT1, sizeof(itemUINT1),buffer);
 		break;
 	case VT_UI2:
@@ -154,7 +155,7 @@ bool VarToStr(VARIANT pvar, char *buffer)
 	case VT_UI4:
 		break;
 	case VT_R4:
-		sprintf(buffer, "%6.2f", pvar.fltVal);
+		sprintf(buffer, "%010.2f", pvar.fltVal);
 		strcpy_s(itemREAL4, sizeof(itemREAL4), buffer);
 		break;
 	case VT_R8:
