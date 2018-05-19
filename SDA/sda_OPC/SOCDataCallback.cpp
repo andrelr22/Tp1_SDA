@@ -7,10 +7,13 @@
 // Luiz T. S. Mendes - DELT/UFMG - 13 Sept 2011
 //
 #include "stdafx.h"
-
+#include <string.h>  
+#include <stdlib.h> 
 #include <stdio.h>
 #include "SOCDataCallback.h"
 #include "SOCWrapperFunctions.h"
+
+extern char DadosRecebidos[30];
 
 extern UINT OPC_DATA_TIME;
 
@@ -128,25 +131,21 @@ HRESULT STDMETHODCALLTYPE SOCDataCallback::OnDataChange(
 		// a few OPC data types are supported.
 		status = VarToStr(pvValues[dwItem], buffer);
 		if (status) {
-			printf("Data callback: Value = %s", buffer);
+			//printf("Data callback: Value = %s", buffer);
+			printf("%s\n", DadosRecebidos);///////////////////
+			strcpy_s(DadosRecebidos, sizeof(DadosRecebidos), buffer);
+
 			quality = pwQualities[dwItem] & OPC_QUALITY_MASK;
-			if (quality == OPC_QUALITY_GOOD)
+			/*if (quality == OPC_QUALITY_GOOD)
 				printf(" Quality: good");
 			else
 				printf(" Quality: not good");
-			// Code below extracted from the Microsoft KB:
-			//     http://support.microsoft.com/kb/188768
-			// Note that in order for it to work, the Visual Studio C++ must
-			// be configured so that the "character set" property is "not set"
-			// (Project->Project Properties->Configuration Properties->General).
-			// Otherwise, if defined e.g. as "use Unicode" (as it seems to be
-			// the default when a new project is created), there will be
-			// compilation errors.
+			*/
 			FileTimeToLocalFileTime(&pftTimeStamps[dwItem], &lft);
 			FileTimeToSystemTime(&lft, &st);
 			GetDateFormat(LOCALE_SYSTEM_DEFAULT, DATE_SHORTDATE, &st, NULL, szLocalDate, 255);
 			GetTimeFormat(LOCALE_SYSTEM_DEFAULT, 0, &st, NULL, szLocalTime, 255);
-			printf(" Time: %s %s\n", szLocalDate, szLocalTime);
+			//printf(" Time: %s %s\n", szLocalDate, szLocalTime);
 		}
 		else printf("IOPCDataCallback: Unsupported item type\n");
 	}
