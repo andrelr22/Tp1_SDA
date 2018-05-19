@@ -123,7 +123,6 @@ bool VarToStr(VARIANT pvar, char *buffer)
 	bool vReturn = true;
 	switch (pvar.vt & ~VT_ARRAY)
 	{
-	case VT_BOOL:
 	case VT_I1:
 		sprintf(buffer, "%d", pvar.iVal);	break;
 		// RAFAEL sprintf(buffer, "%06d",    pvar.iVal);	break;
@@ -152,6 +151,8 @@ bool VarToStr(VARIANT pvar, char *buffer)
 	case VT_BSTR:
 		sprintf(buffer, "%s", pvar.bstrVal);	break;
 		//RAFAEL sprintf(buffer, "%6.6s",    pvar.bstrVal);	break;
+	case VT_BOOL:
+		sprintf(buffer, pvar.boolVal ? "true" : "false" , pvar.boolVal);	break;
 	default:
 		sprintf(buffer, "%s", NULL);
 		vReturn = false;
