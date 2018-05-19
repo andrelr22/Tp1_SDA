@@ -5,8 +5,8 @@
 
 void connect_OPC(char function[]);
 int servidor_TCP(void);
-char TCPparaOPCV[5][30];
-char OPCparaTCPV[5][32];
+char TCPparaOPCV[5][35];
+char OPCparaTCPV[5][35];
 
 char TCPparaOPC[30];
 char OPCparaTCP[32];

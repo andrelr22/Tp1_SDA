@@ -22,32 +22,52 @@
 #define DEFAULT_BUFLEN 50
 #define DEFAULT_PORT "7420"
 
-extern char TCPparaOPCV[5][30];
-extern char OPCparaTCPV[5][32];
+#define TAMBUFFER1 35
+#define TAMBUFFER2 35
+
+extern char TCPparaOPCV[5][TAMBUFFER1];
+extern char OPCparaTCPV[5][TAMBUFFER2];
 
 extern char TCPparaOPC[30];
 extern char OPCparaTCP[32];
 
 int ApontadorPosicao = 0;
 
+
+void FuncaoDebug(int id, char  *Buffer) {
+	int posicao = (id) % 5;
+	for (int i = 0; i < TAMBUFFER1; i++) {
+		OPCparaTCPV[posicao][i] = Buffer[i];
+		printf("%c", OPCparaTCPV[posicao][i]);
+	}
+	printf("\n");
+}
+
+
+
 void leBuffer(int id, char *idstring, char  *Buffer) {
 	int flag = 0, inter = 0, posicao = id % 5;
 	while (flag == 0) {
-		if ((strncmp((OPCparaTCPV[posicao] + 2), idstring, 3) == 0)) {
-				strcpy_s(Buffer, sizeof(Buffer), OPCparaTCPV[posicao]);
-				flag = 1;
+		if (OPCparaTCPV[posicao][0]==idstring[0] && OPCparaTCPV[posicao][1] == idstring[1] && OPCparaTCPV[posicao][2] == idstring[2]) {
+			for (int i = 0; i < TAMBUFFER2; i++) {
+				Buffer[i] = OPCparaTCPV[posicao][i];
+				}
+			flag = 1;
 			}
 		inter = inter + 1;
 		if (inter > 1000) {
-			printf("SERVIDOR TCP : ERRO INTERNO");
+			printf("SERVIDOR TCP : ERRO INTERNO, id requerido eh %s\n",idstring);
 			exit(1);
 		}
 	}
 }
 
 void adicionaAoBuffer(int id,char  *Buffer) {
-	int posicao =(id-1) % 5;
-	strcpy_s(TCPparaOPCV[posicao], sizeof(TCPparaOPCV[posicao]), Buffer);
+	int posicao =(id) % 5;
+	for (int i = 0; i < TAMBUFFER1; i++) {
+		TCPparaOPCV[posicao][i]= Buffer[i] ;
+		printf("%c", TCPparaOPCV[posicao][i]);
+	}
 
 }
 
@@ -123,7 +143,29 @@ int enviaDados(SOCKET ClientSocket, const char *Buffer, int IdMensagem) {
 
 int servidor_TCP(void)
 {
+	
+	///////////PARTE DE TESTE ///////////////
+	char test[35], number[4];
+	strcpy_s(test, sizeof(test), "this is a test1");
+	strcpy_s(number, sizeof(number), "003");
+	
+	adicionaAoBuffer(3, test);
+	printf(" aa%c", TCPparaOPCV[2][3]);
 
+	strcpy_s(test, sizeof(test), "000;000;00000;False;000;0000000.00");
+	FuncaoDebug(0, test);
+
+	strcpy_s(test, sizeof(test), "001;001;00001;False;000;0000000.00");
+	FuncaoDebug(1, test);
+
+	strcpy_s(test, sizeof(test), "002;002;00002;False;000;0000000.00");
+	FuncaoDebug(2, test);
+
+	strcpy_s(test, sizeof(test), "003;003;00003;False;000;0000000.00");
+	FuncaoDebug(3, test);
+
+	strcpy_s(test, sizeof(test), "004;004;00004;False;000;0000000.00");
+	FuncaoDebug(4, test);
 	WSADATA wsaData;
 	int iResult;
 
@@ -244,7 +286,7 @@ int servidor_TCP(void)
 
 				sprintf_s(IdstringTrocaDados, "%03d", IdLeitura);
 				leBuffer(IdLeitura, IdstringTrocaDados, sendbuf);
-
+				IdLeitura = IdLeitura + 1;
 				IdMensagem = IdMensagem + 1;
 				enviaDados(ClientSocket, sendbuf+4, IdMensagem);
 				IdMensagem = IdMensagem + 1; //referente ao ACK que será enviado pelo cliente
