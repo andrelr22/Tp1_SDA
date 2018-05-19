@@ -11,6 +11,8 @@ char OPCparaTCPV[5][35];
 char TCPparaOPC[30];
 char OPCparaTCP[32];
 
+char DadosRecebidos[30];
+
 int main()
 {
 	strcpy_s(OPCparaTCP, sizeof(OPCparaTCP), "023;00045;False;038;0000543.28");
@@ -23,5 +25,5 @@ int main()
 
 	TCP_SERVER.join();
 	*/
-	connect_OPC(0);
+	connect_OPC(1);
 }

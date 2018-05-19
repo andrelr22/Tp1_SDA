@@ -132,7 +132,7 @@ HRESULT STDMETHODCALLTYPE SOCDataCallback::OnDataChange(
 		status = VarToStr(pvValues[dwItem], buffer);
 		if (status) {
 			//printf("Data callback: Value = %s", buffer);
-			printf("%s\n", DadosRecebidos);///////////////////
+			//printf("%s\n", DadosRecebidos);///////////////////
 			strcpy_s(DadosRecebidos, sizeof(DadosRecebidos), buffer);
 
 			quality = pwQualities[dwItem] & OPC_QUALITY_MASK;
