@@ -32,5 +32,5 @@ int main()
 
 	TCP_SERVER.join();
 	*/
-	connect_OPC(0);
+	connect_OPC(1);
 }
