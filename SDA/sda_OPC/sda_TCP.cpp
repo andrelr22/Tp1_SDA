@@ -31,6 +31,7 @@ extern char OPCparaTCPV[5][TAMBUFFER2];
 
 int ApontadorPosicao = 0;
 
+void connect_OPC(int function);
 
 void FuncaoDebug(int id, char  *Buffer) {
 	int posicao = (id) % 5;
@@ -166,7 +167,6 @@ int servidor_TCP(void)
 	char recvbuf[DEFAULT_BUFLEN];
 	int recvbuflen = DEFAULT_BUFLEN;
 
-	// Initialize Winsock
 	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
 	if (iResult != 0) {
 		printf("WSAStartup failed with error: %d\n", iResult);
@@ -255,6 +255,7 @@ int servidor_TCP(void)
 				strcat_s(sendbuf, sizeof(sendbuf), (recvbuf + 10));
 				adicionaAoBuffer(IdEscrita, sendbuf);
 				IdEscrita = IdEscrita + 1;
+				connect_OPC(1);
 		
 
 			}
