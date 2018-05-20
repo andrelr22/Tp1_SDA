@@ -229,7 +229,7 @@ int servidor_TCP(void)
 	closesocket(ListenSocket);
 	int  IdMensagem, IdLeitura = 0, IdEscrita = 0;
 	// Receive until the peer shuts down the connection
-	char sendbuf[50], IdstringTrocaDados[4];
+	char sendbuf[100], IdstringTrocaDados[4];
 	while (1 == 1) {
 
 		iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
@@ -252,8 +252,11 @@ int servidor_TCP(void)
 				strcpy_s(sendbuf, sizeof(sendbuf), "0;");
 				strcpy_s(sendbuf, sizeof(sendbuf), IdstringTrocaDados);
 				strcat_s(sendbuf, sizeof(sendbuf), ";");
+				printf("antes concatenacao\n");
 				strcat_s(sendbuf, sizeof(sendbuf), (recvbuf + 10));
+				printf("antes adiciona escrita\n");
 				adicionaAoBuffer(IdEscrita, sendbuf);
+				printf("antes connectopc\n");
 				IdEscrita = IdEscrita + 1;
 				connect_OPC(1);
 		
