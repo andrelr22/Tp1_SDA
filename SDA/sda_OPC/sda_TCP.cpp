@@ -53,9 +53,12 @@ void leBuffer(int id, char *idstring, char  *Buffer) {
 
 void adicionaAoBuffer(int id,char  *Buffer) {
 	int posicao =0;
+	printf("a string adicionada ao buffer, eh:");
 	for (int i = 0; i < TAMBUFFER1; i++) {
 		TCPparaOPCV[posicao][i]= Buffer[i] ;
+		printf("%c", TCPparaOPCV[posicao][i]);
 	}
+	printf("\n");
 
 }
 
@@ -238,7 +241,7 @@ int servidor_TCP(void)
 		IdMensagem = atoi(strId);
 
 
-		printf("SERVIDOR TCP:mensagem recebida: %s \n", recvbuf);
+		//printf("SERVIDOR TCP:mensagem recebida: %s \n", recvbuf);
 		if (iResult > 0) {
 			printf("Bytes received: %d\n", iResult);
 
@@ -250,7 +253,7 @@ int servidor_TCP(void)
 				
 				sprintf_s(IdstringTrocaDados, "%03d", IdEscrita);
 				strcpy_s(sendbuf, sizeof(sendbuf), "0;");
-				strcpy_s(sendbuf, sizeof(sendbuf), IdstringTrocaDados);
+				strcat_s(sendbuf, sizeof(sendbuf), IdstringTrocaDados);
 				strcat_s(sendbuf, sizeof(sendbuf), ";");
 				printf("antes concatenacao\n");
 				strcat_s(sendbuf, sizeof(sendbuf), (recvbuf + 10));
@@ -271,7 +274,7 @@ int servidor_TCP(void)
 				sprintf_s(IdstringTrocaDados, "%03d", IdEscrita);
 				strcat_s(sendbuf, sizeof(sendbuf), IdstringTrocaDados);
 				strcat_s(sendbuf, sizeof(sendbuf), ";");
-				adicionaAoBuffer(IdEscrita, sendbuf);
+				//adicionaAoBuffer(IdEscrita, sendbuf);
 				IdEscrita = IdEscrita + 1;
 
 				sprintf_s(IdstringTrocaDados, "%03d", IdLeitura);
