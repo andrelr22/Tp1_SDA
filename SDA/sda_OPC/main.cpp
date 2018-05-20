@@ -23,6 +23,10 @@ int main()
 {
 	//strcpy_s(OPCparaTCP, sizeof(OPCparaTCP), "023;00045;False;038;0000543.28");
 	//strcpy_s(TCPparaOPC,sizeof(TCPparaOPC),"123456789009876543211234567");
+	//for (int i = 0; i < 33; i++) {
+		TCPparaOPCV[0][i] = 'A';
+	//}
+
 
 	/*char function = 0;
 	std::thread OPC_A_READ(connect_OPC, function);
@@ -32,5 +36,5 @@ int main()
 
 	TCP_SERVER.join();
 	*/
-	connect_OPC(0);
+	connect_OPC(1);
 }
