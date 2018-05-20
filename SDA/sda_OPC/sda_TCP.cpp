@@ -28,8 +28,6 @@
 extern char TCPparaOPCV[5][TAMBUFFER1];
 extern char OPCparaTCPV[5][TAMBUFFER2];
 
-extern char TCPparaOPC[30];
-extern char OPCparaTCP[32];
 
 int ApontadorPosicao = 0;
 
@@ -46,27 +44,16 @@ void FuncaoDebug(int id, char  *Buffer) {
 
 
 void leBuffer(int id, char *idstring, char  *Buffer) {
-	int flag = 0, inter = 0, posicao = id % 5;
-	while (flag == 0) {
-		if (OPCparaTCPV[posicao][0]==idstring[0] && OPCparaTCPV[posicao][1] == idstring[1] && OPCparaTCPV[posicao][2] == idstring[2]) {
-			for (int i = 0; i < TAMBUFFER2; i++) {
-				Buffer[i] = OPCparaTCPV[posicao][i];
-				}
-			flag = 1;
-			}
-		inter = inter + 1;
-		if (inter > 1000) {
-			printf("SERVIDOR TCP : ERRO INTERNO, id requerido eh %s\n",idstring);
-			exit(1);
-		}
+	int flag = 0, inter = 0, posicao = 0;
+	for (int i = 0; i < TAMBUFFER2; i++) {
+		Buffer[i] = OPCparaTCPV[posicao][i];
 	}
 }
 
 void adicionaAoBuffer(int id,char  *Buffer) {
-	int posicao =(id) % 5;
+	int posicao =0;
 	for (int i = 0; i < TAMBUFFER1; i++) {
 		TCPparaOPCV[posicao][i]= Buffer[i] ;
-		printf("%c", TCPparaOPCV[posicao][i]);
 	}
 
 }
@@ -268,8 +255,7 @@ int servidor_TCP(void)
 				strcat_s(sendbuf, sizeof(sendbuf), (recvbuf + 10));
 				adicionaAoBuffer(IdEscrita, sendbuf);
 				IdEscrita = IdEscrita + 1;
-				//memcpy(TCPparaOPC, (recvbuf + 10), 22 * sizeof(char));
-				printf("TCPparaOPC recebeu dados, dados recebidos = %s\n\n", TCPparaOPC);
+		
 
 			}
 			else if (strncmp(&recvbuf[0], "01", 2) == 0) {
